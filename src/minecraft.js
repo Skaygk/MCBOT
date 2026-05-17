@@ -92,8 +92,23 @@ function scheduleReconnect(ms) {
   }, ms);
 }
 
+function disconnectBot() {
+  if (!bot) return;
+  // Quitamos los listeners de reconexión antes de desconectar
+  // para que un disconnect manual no dispare el auto-reconect
+  bot.removeAllListeners('kicked');
+  bot.removeAllListeners('error');
+  bot.removeAllListeners('end');
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
+  bot.quit();
+  bot = null;
+}
+
 function getBot() {
   return bot;
 }
 
-module.exports = { createBot, getBot };
+module.exports = { createBot, disconnectBot, getBot };

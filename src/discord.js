@@ -53,6 +53,8 @@ client.on('messageCreate', async (message) => {
       '`!ayuda` — Esta lista',
       '`!estado` — Estado del bot de Minecraft',
       '`!chat <mensaje>` — Enviar mensaje al chat de MC',
+      '`!disconnect` — Desconectar el bot de Minecraft',
+      '`!reconnect` — Desconectar y volver a conectar',
       '',
       '**Mensajes automáticos**',
       '`!msg add <mensaje>` — Agregar mensaje a la lista',
@@ -205,6 +207,22 @@ client.on('messageCreate', async (message) => {
     }
 
     return message.reply('❌ Uso: `!afk start [radio] [segundos]` o `!afk stop`');
+  }
+
+  // ── !disconnect ───────────────────────────────────────────────────────────
+  if (cmd === 'disconnect') {
+    if (!mcBot || !mcBot.entity) return message.reply('❌ El bot ya está desconectado.');
+    const { disconnectBot } = require('./minecraft');
+    disconnectBot();
+    return message.reply('🔌 Bot desconectado del servidor de Minecraft.');
+  }
+
+  // ── !reconnect ────────────────────────────────────────────────────────────
+  if (cmd === 'reconnect') {
+    const { disconnectBot, createBot } = require('./minecraft');
+    disconnectBot();
+    setTimeout(() => createBot(), 2000);
+    return message.reply('🔄 Reconectando al servidor de Minecraft...');
   }
 });
 
